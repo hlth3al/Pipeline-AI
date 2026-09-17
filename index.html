@@ -1,141 +1,66 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>پنل فرماندهی هوشمند پایش و ضد سرقت خطوط لوله | حسین لعلیان</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل هوشمند Pipeline-AI | حسین لعلیان</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
   <style>
-    :root { --bg: #070d19; --card-bg: rgba(15, 23, 42, 0.78); --border: rgba(239, 68, 68, 0.22); --primary: #ef4444; --accent: #22c55e; --text: #f1f5f9; --text-muted: #94a3b8; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', sans-serif; }
-    body { background: #030712; color: var(--text); min-height: 100vh; padding: 20px; }
-    .container { max-width: 1200px; margin: 0 auto; }
+    :root { --bg: #030712; --panel: #0f172a; --primary: #ef4444; --text: #f1f5f9; }
+    body { background: var(--bg); color: var(--text); font-family: 'Vazirmatn', sans-serif; margin: 0; padding-bottom: 100px; }
     
-    /* Header */
-    header { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .author-badge { text-align: left; border-right: 2px solid var(--primary); padding-right: 15px; }
-    .author-name { font-size: 1.05rem; font-weight: bold; color: #fff; }
-    .author-rank { font-size: 0.8rem; color: var(--primary); }
+    /* هدر */
+    header { background: var(--panel); border-bottom: 1px solid var(--primary); padding: 20px; text-align: center; }
+    .author-info { font-size: 0.9rem; color: #94a3b8; margin-top: 5px; }
 
-    /* Bottom Dock */
-    .bottom-dock-wrapper { background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, #030712 100%); border: 1px solid var(--border); border-radius: 18px; padding: 20px; margin-top: 30px; }
-    .dock-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
-    .btn-dock { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 10px; cursor: pointer; text-align: center; font-size: 0.9rem; transition: 0.2s; }
+    /* محتوای اصلی (جایی که داشبورد شما قرار می‌گیرد) */
+    .dashboard-content { padding: 20px; max-width: 1200px; margin: 0 auto; }
+
+    /* دکمه‌های پایین صفحه */
+    .bottom-dock { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 23, 42, 0.95); border-top: 2px solid var(--primary); padding: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; z-index: 1000; }
+    .btn-dock { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--primary); color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
     .btn-dock:hover { background: var(--primary); }
 
-    /* Modal */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    /* استایل مودال‌ها */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 9999; }
     .modal-overlay.active { display: flex; }
-    .modal-box { background: #0f172a; border: 1px solid var(--primary); width: 90%; max-width: 600px; padding: 25px; border-radius: 15px; }
-    .modal-close { cursor: pointer; float: left; color: #fff; font-size: 1.5rem; }
-    .modal-content { color: #cbd5e1; line-height: 1.8; }
-    
-    .author-footer { text-align: center; padding: 20px; font-size: 0.8rem; color: var(--text-muted); }
+    .modal-box { background: var(--panel); border: 1px solid var(--primary); width: 90%; max-width: 500px; padding: 20px; border-radius: 12px; position: relative; }
+    .modal-close { cursor: pointer; position: absolute; top: 10px; left: 15px; font-size: 1.5rem; color: var(--primary); }
   </style>
 </head>
 <body>
 
-<div class="container">
+  <!-- هدر هویتی -->
   <header>
-    <div><h1>🛡️ مرکز فرماندهی پایش خطوط انتقال</h1></div>
-    <div class="author-badge">
-      <div class="author-name">حسین لعلیان</div>
-      <div class="author-rank">رتبه ۳۲ کنکور دکتری</div>
-      <div style="font-size:0.7rem;">ai.algorithms.ballistics@gmail.com</div>
-    </div>
+    <h1>پنل فرماندهی Pipeline-AI</h1>
+    <div class="author-info">توسعه‌دهنده: حسین لعلیان | رتبه ۳۲ کنکور دکتری</div>
   </header>
 
-  <!-- بقیه محتوای پنل شما در اینجا قرار دارد -->
-  <div style="height: 300px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 15px;">
-    [نمایش زنده داده‌های فشار و دبی خطوط لوله]
+  <!-- داشبورد اصلی شما (محتوای قبلی خود را اینجا جایگذاری کنید) -->
+  <main class="dashboard-content">
+    <p>اینجا فضای اصلی داشبورد شماست. هر چارت، جدول یا المانی که قبلاً داشتید را دقیقاً در همین بخش کپی کنید.</p>
+  </main>
+
+  <!-- نوار دکمه‌ها -->
+  <div class="bottom-dock">
+    <button class="btn-dock" onclick="openM('m1')">۱. طرح توجیهی</button>
+    <button class="btn-dock" onclick="openM('m2')">۲. مکانیزم فنی</button>
+    <button class="btn-dock" onclick="openM('m3')">۳. مسیر عملیاتی</button>
+    <button class="btn-dock" onclick="openM('m4')">۴. نکات قرارداد</button>
+    <button class="btn-dock" onclick="openM('m5')">۵. مدل‌های مالی</button>
   </div>
 
-  <!-- پایین‌ترین بخش پنل: ۵ دکمه استراتژیک -->
-  <div class="bottom-dock-wrapper">
-    <h3 style="color:var(--primary); text-align:center;">مستندات استراتژیک و مدل‌های حفاظتی</h3>
-    <div class="dock-buttons">
-      <button class="btn-dock" onclick="window.openModal('modal1')">۱. طرح توجیهی عملیاتی</button>
-      <button class="btn-dock" onclick="window.openModal('modal2')">۲. مکانیزم و ارزش پیشنهادی</button>
-      <button class="btn-dock" onclick="window.openModal('modal3')">۳. مسیر عملیاتی پنل</button>
-      <button class="btn-dock" onclick="window.openModal('modal4')">۴. نکات کلیدی قرارداد</button>
-      <button class="btn-dock" onclick="window.openModal('modal5')">۵. مدل‌های مالی و حفاظتی</button>
-    </div>
-  </div>
+  <!-- تعریف مودال‌ها -->
+  <div id="m1" class="modal-overlay" onclick="closeM('m1')"><div class="modal-box" onclick="event.stopPropagation()"><span class="modal-close" onclick="closeM('m1')">&times;</span><h3>طرح توجیهی</h3><p>پایش نشت و تشخیص سرقت هوشمند خطوط لوله.</p></div></div>
+  <div id="m2" class="modal-overlay" onclick="closeM('m2')"><div class="modal-box" onclick="event.stopPropagation()"><span class="modal-close" onclick="closeM('m2')">&times;</span><h3>مکانیزم فنی</h3><p>استفاده از دوقلوی دیجیتال و تشخیص آنومالی در فشار جریان.</p></div></div>
+  <div id="m3" class="modal-overlay" onclick="closeM('m3')"><div class="modal-box" onclick="event.stopPropagation()"><span class="modal-close" onclick="closeM('m3')">&times;</span><h3>مسیر عملیاتی</h3><p>تحلیل بلادرنگ داده‌های SCADA و هشدارهای اتوماتیک.</p></div></div>
+  <div id="m4" class="modal-overlay" onclick="closeM('m4')"><div class="modal-box" onclick="event.stopPropagation()"><span class="modal-close" onclick="closeM('m4')">&times;</span><h3>نکات قرارداد</h3><p>شرایط محرمانگی و پروتکل کالیبراسیون سخت‌افزار.</p></div></div>
+  <div id="m5" class="modal-overlay" onclick="closeM('m5')"><div class="modal-box" onclick="event.stopPropagation()"><span class="modal-close" onclick="closeM('m5')">&times;</span><h3>مدل‌های مالی</h3><p>مدل اشتراک ۲۴/۷ و لایسنس‌های اختصاصی.</p></div></div>
 
-  <footer class="author-footer">
-    توسعه‌یافته توسط حسین لعلیان | امنیت پایدار خطوط لوله
-  </footer>
-</div>
-
-<!-- Modals -->
-<div id="modal1" class="modal-overlay" onclick="if(event.target.id==='modal1') this.classList.remove('active')">
-  <div class="modal-box"><span class="modal-close" onclick="this.parentElement.parentElement.classList.remove('active')">&times;</span>
-    <div class="modal-content">
-      <h3>طرح توجیهی عملیاتی: مدیریت بحران نشت و سرقت</h3>
-      <p>صنایع انتقال سیالات با تهدیدات زیر مواجهند:</p>
-      <ul>
-        <li><strong>تلفات محصول و سرقت:</strong> خسارات جبران‌ناپذیر مالی ناشی از بهره‌برداری غیرمجاز.</li>
-        <li><strong>بحران‌های زیست‌محیطی:</strong> هزینه‌های پاکسازی و جریمه‌های ناشی از نشت (Leakage) در مناطق حساس.</li>
-      </ul>
-      <p>این پنل با پیاده‌سازی هوش مصنوعی روی سنسورهای فشار و صوت، ناهنجاری‌ها را در لحظه تشخیص داده و از خسارت جلوگیری می‌کند.</p>
-    </div>
-  </div>
-</div>
-
-<div id="modal2" class="modal-overlay" onclick="if(event.target.id==='modal2') this.classList.remove('active')">
-  <div class="modal-box"><span class="modal-close" onclick="this.parentElement.parentElement.classList.remove('active')">&times;</span>
-    <div class="modal-content">
-      <h3>مکانیزم و ارزش پیشنهادی</h3>
-      <ul>
-        <li><strong>دوقلوی دیجیتال (Digital Twin):</strong> مدل‌سازی دقیق هیدرولیکی خط لوله برای تشخیص تفاوت رفتار واقعی با مدل نظری.</li>
-        <li><strong>شناسایی آنومالی (Anomaly Detection):</strong> تشخیص الگوهای افت فشار ناگهانی که نشان‌دهنده دسترسی غیرمجاز یا شکستگی است.</li>
-        <li><strong>اتصال صنعتی:</strong> ارتباط مستقیم با سیستم‌های SCADA جهت توقف خودکار پمپاژ در صورت بروز بحران.</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<div id="modal3" class="modal-overlay" onclick="if(event.target.id==='modal3') this.classList.remove('active')">
-  <div class="modal-box"><span class="modal-close" onclick="this.parentElement.parentElement.classList.remove('active')">&times;</span>
-    <div class="modal-content">
-      <h3>مسیر عملیاتی و استقرار</h3>
-      <ol>
-        <li><strong>پایش بلادرنگ:</strong> تحلیل مداوم داده‌های فشار، دما و جریان.</li>
-        <li><strong>تشخیص رخداد:</strong> استفاده از الگوریتم‌های هوش مصنوعی برای جداسازی "نویز محیطی" از "نشت واقعی".</li>
-        <li><strong>فرماندهی:</strong> ارسال هشدارهای فوری به اتاق کنترل و صدور دستورات حفاظتی به شیرهای برقی (Solenoid Valves).</li>
-      </ol>
-    </div>
-  </div>
-</div>
-
-<div id="modal4" class="modal-overlay" onclick="if(event.target.id==='modal4') this.classList.remove('active')">
-  <div class="modal-box"><span class="modal-close" onclick="this.parentElement.parentElement.classList.remove('active')">&times;</span>
-    <div class="modal-content">
-      <h3>نکات کلیدی قرارداد</h3>
-      <ul>
-        <li><strong>سلب مسئولیت (Disclaimer):</strong> دقت سامانه وابسته به کالیبراسیون صحیح سنسورهای سخت‌افزاری کارفرماست.</li>
-        <li><strong>محرمانگی (NDA):</strong> نقشه‌های توپولوژی خطوط لوله و داده‌های عملیاتی در امنیت کامل می‌مانند.</li>
-        <li><strong>فاز پایلوت:</strong> اجرای تست نفوذ و دقت تشخیص در یک زون مشخص برای راستی‌آزمایی نرخ خطای مثبت (False Positive).</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<div id="modal5" class="modal-overlay" onclick="if(event.target.id==='modal5') this.classList.remove('active')">
-  <div class="modal-box"><span class="modal-close" onclick="this.parentElement.parentElement.classList.remove('active')">&times;</span>
-    <div class="modal-content">
-      <h3>مدل‌های اقتصادی و ارزش حفاظتی</h3>
-      <ul>
-        <li><strong>مدل اشتراک حفاظتی:</strong> پرداخت هزینه ماهانه در ازای مانیتورینگ ۲۴/۷ و تضمین سطح خدمت (SLA).</li>
-        <li><strong>مدل فروش لایسنس:</strong> استقرار کامل بر روی سرورهای داخلی کارفرما جهت امنیت حداکثری داده‌های خطوط لوله.</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<script>
-  window.openModal = function(id) { document.getElementById(id).classList.add('active'); };
-</script>
+  <script>
+    function openM(id) { document.getElementById(id).classList.add('active'); }
+    function closeM(id) { document.getElementById(id).classList.remove('active'); }
+  </script>
 
 </body>
 </html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل فرماندهی عملیات پایش پیوستگی و نقطه‌یابی ضد سرقت و نشتی خطوط لوله انتقال فرآورده‌های نفتی و سوخت (Pipeline Theft & Leak Detection AI - Digital Twin) | حسین لعلیان</title>
+  <style>
+    :root {
+      --bg: #060a12;
+      --card-bg: #0d1527;
+      --card-border: #1e2c47;
+      --primary: #38bdf8;
+      --primary-glow: rgba(56, 189, 248, 0.25);
+      --amber: #f59e0b;
+      --emerald: #10b981;
+      --rose: #f43f5e;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.6);
+    }
+    .header-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    h1 {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 0.88rem;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .badge-edge {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-npw {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .badge-pipe {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+    }
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+    .metric-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .metric-value {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .metric-desc {
+      font-size: 0.75rem;
+      color: var(--primary);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 950px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .panel-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+    }
+    .panel-card h3 {
+      font-size: 0.95rem;
+      color: var(--primary);
+    }
+    .test-btn {
+      background: #1e293b;
+      border: 1px solid var(--rose);
+      color: var(--rose);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .test-btn:hover {
+      background: var(--rose);
+      color: #fff;
+    }
+    canvas {
+      width: 100%;
+      height: 220px;
+      background: #04070d;
+      border-radius: 8px;
+      border: 1px solid #16243d;
+    }
+    .terminal {
+      background: #04070d;
+      border: 1px solid #16243d;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: #38bdf8;
+      height: 220px;
+      overflow-y: auto;
+      line-height: 1.7;
+    }
+    .disclaimer-card {
+      background: #080d1a;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .disclaimer-title {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: var(--amber);
+      margin-bottom: 8px;
+    }
+    .disclaimer-text {
+      font-size: 0.84rem;
+      line-height: 1.8;
+      color: #cbd5e1;
+      text-align: justify;
+    }
+    footer {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-top">
+      <div>
+        <h1>پنل فرماندهی عملیات پایش پیوستگی و نقطه‌یابی ضد سرقت و نشتی خطوط لوله انتقال فرآورده‌های نفتی و سوخت (Pipeline Theft & Leak Detection AI - Digital Twin)</h1>
+        <div class="subtitle">طراحی و توسعه مهندسی: حسین لعلیان (رتبه ۳۲ کنکور دکتری) | برگرفته از پرپوزال حسین لعلیان سال ۱۳۹۵</div>
+      </div>
+      <div class="badges">
+        <span class="badge badge-edge">● RT-SCADA INTEGRATED</span>
+        <span class="badge badge-npw">NPW WAVE SPEED: 1150 m/s</span>
+        <span class="badge badge-pipe">SECTION: REFINERY-01 TO TERMINAL-B</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-label">وضعیت ایمنی هیدرولیک خط (Security Status)</div>
+      <div class="metric-value" style="color: var(--emerald);" id="statusVal">حالت ایمن (NORMAL)</div>
+      <div class="metric-desc">عدم افت فشار آنی و نرخ جریان پایدار</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-label">نقطه‌یابی انشعاب غیرمجاز / نشتی (Location)</div>
+      <div class="metric-value" style="color: var(--primary);" id="locVal">--- کیلومتر</div>
+      <div class="metric-desc">دقت تفکیک متریک بر مبنای موج فشار منفی</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-label">تفاضل دبی جرمی ورود و خروج (Mass Balance)</div>
+      <div class="metric-value" id="flowDelta">۰.۰۲ m³/h</div>
+      <div class="metric-desc">تحلیل پیوستگی جرم در لایه استنتاج لبه</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-label">گرادیان فشار خط انتقال (Pressure Gradient)</div>
+      <div class="metric-value" id="pressGrad">۵۲.۴ → ۳۸.۱ bar</div>
+      <div class="metric-desc">ایستگاه فشار ورودی تا پایانه تحویل نهایی</div>
+    </div>
+  </div>
+
+  <div class="main-grid">
+    <div class="panel-card">
+      <div class="panel-header-row">
+        <h3>پایش بلادرنگ گرادیان فشار و سنسورهای آکوستیک گذر موج (NPW Dynamic Wave)</h3>
+        <button class="test-btn" onclick="triggerTheftSimulation()">تزریق تست تهاجمی سرقت/نشتی</button>
+      </div>
+      <canvas id="pipelineCanvas"></canvas>
+    </div>
+
+    <div class="panel-card">
+      <div class="panel-header-row">
+        <h3>گزارش لاگ‌های تلگرام دیسپاچینگ و لبه هوش مصنوعی</h3>
+      </div>
+      <div class="terminal" id="scadaLogs">
+        <div>[سیستم] اتصال بی‌درنگ به ایستگاه‌های RTU و مانیتورینگ لبه برقرار است.</div>
+        <div>[هیدرولیک] سرعت سیر موج صوتی سیال روی ۱۱۵۰ متر بر ثانیه کالیبره گردید.</div>
+        <div>[پیوستگی] تعادل جرم خط انتقال نفت‌گاز در محدوده خطای استاندارد ۰.۱٪.</div>
+        <div>[دیده‌بانی] هیچ‌گونه موج فشار منفی ناشی از هات‌تپینگ (Hot-Tap) رویت نشد.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer-card">
+    <div class="disclaimer-title">بیانیه حقوقی و فنی سیستم (Demo Verification):</div>
+    <div class="disclaimer-text">
+      جهت ممانعت از کپی‌برداری غیرمجاز و حفظ حقوق مالکیت فکری، این نسخه ارائه‌شده صرفاً یک دمو با داده‌های نمونه و تقلیل‌یافته (Synthetic/Minimal) می‌باشد. در صورت ثبت سفارش صنعتی، پنل نهایی به‌صورت تکاملی توسعه یافته و از طریق پروتکل‌های سخت‌افزاری صنعتی (HIL) به لبه‌های هوش مصنوعی فدرال پردازشی واقعی (Real-Time Sensors Edge)، داده‌های مدل‌های شبیه‌ساز Simulink متصل می‌گردد تا کمترین ضریب خطا محاسبه نماید. و هر زمان پل واقعی Simulink/HIL و سنسورهای هوش مصنوعی لبه فدرال متصل شوند، سیستم آماده دریافت اطلاعات زنده خواهد بود.
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      طراحی و توسعه مهندسی: <strong>حسین لعلیان؛ رتبه ۳۲ کنکور دکتری</strong>
+    </div>
+    <div>
+      رایانامه رسمی ارتباطات صنعتی: <a href="mailto:ai.algorithms.ballistics@gmail.com">ai.algorithms.ballistics@gmail.com</a>
+    </div>
+  </footer>
+
+  <script>
+    const canvas = document.getElementById('pipelineCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+
+    function resizeCanvas() {
+      width = canvas.width = canvas.parentElement.clientWidth - 32;
+      height = canvas.height = 220;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    let pipePoints = 60;
+    let baselinePressure = [];
+    for (let i = 0; i < pipePoints; i++) {
+      baselinePressure.push(52.4 - (i / pipePoints) * 14.3);
+    }
+    let waveDisturbance = new Array(pipePoints).fill(0);
+    let leakDetected = false;
+    let leakPosKm = 43.8;
+
+    function drawPipeline() {
+      ctx.clearRect(0, 0, width, height);
+
+      // رسم شبکه گرید پس‌زمینه
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < width; x += 50) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < height; y += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+
+      // رسم پروفایل هیدرولیکی فشار خط
+      ctx.strokeStyle = leakDetected ? '#f43f5e' : '#38bdf8';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      for (let i = 0; i < pipePoints; i++) {
+        const x = (i / (pipePoints - 1)) * width;
+        const p = baselinePressure[i] + waveDisturbance[i] + (Math.random() - 0.5) * 0.15;
+        const y = height - ((p - 30) / 30) * height;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // رسم خط لوله فیزیکی در کف نمودار
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(0, height - 14, width, 14);
+      ctx.fillStyle = leakDetected ? '#f43f5e' : '#10b981';
+      ctx.fillRect(0, height - 12, width, 10);
+
+      // علامت‌گذاری نقطه نشتی/سرقت در صورت رخداد
+      if (leakDetected) {
+        const leakX = (leakPosKm / 100) * width;
+        ctx.fillStyle = '#f43f5e';
+        ctx.beginPath();
+        ctx.arc(leakX, height - 25, 7, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.font = '11px sans-serif';
+        ctx.fillStyle = '#f43f5e';
+        ctx.fillText('هشدار نفوذ: KM ' + leakPosKm, leakX - 35, height - 38);
+      }
+
+      // انتشار و استهلاک موج
+      for (let i = 0; i < pipePoints; i++) {
+        waveDisturbance[i] *= 0.94;
+      }
+
+      requestAnimationFrame(drawPipeline);
+    }
+    drawPipeline();
+
+    function triggerTheftSimulation() {
+      leakDetected = true;
+      leakPosKm = (35 + Math.random() * 20).toFixed(1);
+      const targetIndex = Math.floor((leakPosKm / 100) * pipePoints);
+      
+      // ایجاد موج فشار منفی در محل سوراخ‌کاری
+      if (targetIndex >= 0 && targetIndex < pipePoints) {
+        waveDisturbance[targetIndex] = -6.5;
+        if (targetIndex > 0) waveDisturbance[targetIndex - 1] = -4.2;
+        if (targetIndex < pipePoints - 1) waveDisturbance[targetIndex + 1] = -4.2;
+      }
+
+      document.getElementById('statusVal').innerText = '🚨 هشدار سرقت / نشتی فعال';
+      document.getElementById('statusVal').style.color = 'var(--rose)';
+      document.getElementById('locVal').innerText = 'کیلومتر ' + leakPosKm;
+      document.getElementById('flowDelta').innerText = '۳.۸۴ m³/h (افت پیوستگی)';
+      document.getElementById('flowDelta').style.color = 'var(--rose)';
+
+      const log = document.getElementById('scadaLogs');
+      const time = new Date().toLocaleTimeString('fa-IR');
+      log.innerHTML = `<div>[${time}] <strong style="color:#f43f5e">🚨 اخطار بحرانی:</strong> افت آنی فشار NPW در کیلومتر ${leakPosKm} کشف شد!</div>` + log.innerHTML;
+
+      setTimeout(() => {
+        leakDetected = false;
+        document.getElementById('statusVal').innerText = 'حالت ایمن (NORMAL)';
+        document.getElementById('statusVal').style.color = 'var(--emerald)';
+        document.getElementById('locVal').innerText = '--- کیلومتر';
+        document.getElementById('flowDelta').innerText = '۰.۰۲ m³/h';
+        document.getElementById('flowDelta').style.color = 'inherit';
+        const timeReset = new Date().toLocaleTimeString('fa-IR');
+        log.innerHTML = `<div>[${timeReset}] [سیستم] فشار هیدرولیک به وضعیت تعادل پایدار بازگشت.</div>` + log.innerHTML;
+      }, 9000);
+    }
+
+    // تلورانس طبیعی بلادرنگ گیج‌ها
+    setInterval(() => {
+      if (!leakDetected) {
+        const inlet = (52.2 + Math.random() * 0.4).toFixed(1);
+        const outlet = (38.0 + Math.random() * 0.3).toFixed(1);
+        document.getElementById('pressGrad').innerText = `${inlet} → ${outlet} bar`;
+      }
+    }, 2500);
+  </script>
+</body>
+</html>
